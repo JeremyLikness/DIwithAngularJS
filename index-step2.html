@@ -1,0 +1,138 @@
+<html>
+<head lang="en">
+    <meta charset="UTF=8"/>
+    <title>Dependency Injection with AngularJS</title>
+</head>
+<body>
+<h1>Dependency Injection with AngularJS</h1>
+<script type="text/javascript">
+
+    (function () {
+
+        function Log () {
+            console.log('Log created');
+        }
+
+        Log.prototype.log = function (msg) {
+            console.log(msg);
+        };
+
+        function Instructors () {
+            this.log = new Log();
+            this.log.log("Instructors created");
+            this.instructors = [
+                {
+                    id: 1,
+                    name: 'Jeremy Likness'
+                },
+                {
+                    id: 2,
+                    name: 'Dave Baskin'
+                },
+                {
+                    id: 3,
+                    name: 'Josh Carroll'
+                }
+            ];
+        }
+
+        Instructors.prototype.getInstructors = function () {
+            return this.instructors.slice(0);
+        };
+
+        Instructors.prototype.getInstructor =  function (id) {
+            var instructors = this.getInstructors(), idx;
+            for (idx = 0; idx <= instructors.length; idx += 1) {
+                if (instructors[idx].id === id) {
+                    return instructors[idx];
+                }
+            }
+            return null;
+        };
+
+        function Courses () {
+            this.log = new Log();
+            this.log.log("Courses created");
+            this.courses = [
+                {
+                    id: 1,
+                    name: 'Angular Directives'
+                },
+                {
+                    id: 2,
+                    name: 'Amazing Panel'
+                },
+                {
+                    id: 3,
+                    name: 'Dependency Injection'
+                }
+            ];
+        }
+
+        Courses.prototype.getCourses = function () {
+            return this.courses.slice(0);
+        };
+
+        Courses.prototype.getCourse =  function (id) {
+            var courses = this.getCourses(), idx;
+            for (idx = 0; idx <= courses.length; idx += 1) {
+                if (courses[idx].id === id) {
+                    return courses[idx];
+                }
+            }
+            return null;
+        };
+
+        function CourseMap () {
+            this.log = new Log();
+            this.log.log("CourseMap created");
+            this.instructors = new Instructors();
+            this.courses = new Courses();
+            this.courseMap = [
+                {
+                    instructorId: 1,
+                    courseId: 3
+                },
+                {
+                    instructorId: 2,
+                    courseId: 1
+                },
+                {
+                    instructorId: 3,
+                    courseId: 2
+                }
+            ];
+        }
+
+        CourseMap.prototype.getCourseMap = function () {
+            var result = [], idx;
+            for (idx = 0; idx < this.courseMap.length; idx += 1) {
+                var courseItem = this.courseMap[idx];
+                result.push({
+                    instructor: this.instructors.getInstructor(courseItem.instructorId),
+                    course: this.courses.getCourse(courseItem.courseId)
+                });
+            }
+            return result;
+        };
+
+        function main () {
+            var log = new Log();
+            var ins = new Instructors();
+            log.log(ins.getInstructors());
+            log.log(ins.getInstructor(1));
+            var course = new Courses();
+            log.log(course.getCourses());
+            log.log(course.getCourse(1));
+            var courseMap = new CourseMap();
+            log.log(courseMap.getCourseMap());
+        }
+
+        main();
+
+    })();
+
+
+</script>
+</body>
+</html>
